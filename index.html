@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carta Organisasi KKSKB</title>
+<style>
+  :root{--ink:#1b2a32;--muted:#6b7c85;--line:#d7e0e4;--bg:#f4f7f8;--brand:#1f4e5f;--brand2:#2c6e83;--accent:#c67b2c;--vac:#c0392b;--card:#fff;--shadow:0 1px 3px rgba(20,50,60,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
+  header{background:var(--brand);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20;box-shadow:var(--shadow)}
+  header h1{font-size:17px;margin:0;font-weight:600}
+  header .sub{font-size:12px;opacity:.8;margin-left:auto}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:52px;z-index:15}
+  .toolbar label{font-size:12px;color:var(--muted);font-weight:600}
+  select,input,button{font-family:inherit;font-size:13px}
+  select,input{padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+  button{padding:7px 13px;border:1px solid var(--brand);border-radius:7px;background:var(--brand);color:#fff;cursor:pointer;font-weight:600}
+  button.ghost{background:#fff;color:var(--brand)} button.ghost:hover{background:#eef4f6} button:hover{filter:brightness(1.06)}
+  .legend{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--muted);margin-left:6px}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .swatch{width:22px;height:0;border-top:2px solid var(--brand2)} .swatch.dot{border-top:2px dashed var(--accent)}
+  .stats{display:flex;gap:18px;padding:8px 20px;background:#eef4f6;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .stats b{color:var(--ink)}
+  .wrap{padding:22px;overflow:auto;position:relative}
+  #overlay{position:absolute;top:0;left:0;pointer-events:none;z-index:1;overflow:visible}
+  .tree{position:relative;z-index:2}
+  .tree,.tree ul{position:relative;padding-top:22px;display:flex;justify-content:center}
+  .tree ul{margin:0}
+  .tree li{list-style:none;position:relative;padding:22px 8px 0;text-align:center}
+  .tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid var(--line);width:50%;height:22px}
+  .tree li::after{right:auto;left:50%;border-left:2px solid var(--line)}
+  .tree li:only-child::after,.tree li:only-child::before{display:none}
+  .tree li:only-child{padding-top:22px}
+  .tree li:first-child::before,.tree li:last-child::after{border:0 none}
+  .tree li:last-child::before{border-right:2px solid var(--line);border-radius:0 6px 0 0}
+  .tree li:first-child::after{border-radius:6px 0 0 0}
+  .tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid var(--line);width:0;height:22px}
+  .tree>li{padding-top:0} .tree>li::before,.tree>li::after{display:none}
+  .node{display:inline-flex;flex-direction:column;gap:2px;min-width:150px;max-width:216px;padding:9px 12px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brand2);border-radius:9px;box-shadow:var(--shadow);text-align:left;cursor:pointer;transition:.12s}
+  .node:hover{border-color:var(--brand);transform:translateY(-1px)}
+  .node .pos{font-size:11px;color:var(--muted);font-weight:600;line-height:1.25;text-transform:uppercase;letter-spacing:.02em}
+  .node .nm{font-size:13px;font-weight:600;color:var(--ink);line-height:1.25}
+  .node.vac{border-top-color:var(--vac);background:#fdf3f3} .node.vac .nm{color:var(--vac);font-style:italic}
+  .node.lead{border-top-color:var(--accent)}
+  .node .toggle{font-size:9px;color:var(--brand2);margin-top:2px}
+  .node .dotted{font-size:10px;color:var(--accent);margin-top:3px;padding-top:3px;border-top:1px dashed var(--accent);line-height:1.3}
+  .node .dotted b{font-weight:700}
+  .collapsed>ul{display:none}
+  .panel{background:#fff;border-top:1px solid var(--line);padding:16px 20px}
+  .panel h2{font-size:14px;margin:0 0 10px;color:var(--brand)}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th,td{border:1px solid var(--line);padding:5px 7px;text-align:left}
+  th{background:var(--brand);color:#fff;position:sticky;top:0;font-weight:600}
+  td input,td select{width:100%;border:0;padding:4px;background:transparent;font-size:12px}
+  td input:focus,td select:focus{outline:2px solid var(--brand2);border-radius:4px;background:#fff}
+  td.also input{background:#fbeedd;border-radius:4px}
+  tr.vacrow td:nth-child(3) input{color:var(--vac);font-style:italic}
+  .del{background:#fff;color:var(--vac);border:1px solid var(--vac);padding:3px 8px;border-radius:6px;font-size:11px}
+  .addbtn{margin-top:10px}
+  .hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+  @media print{header,.toolbar,.stats,.panel{display:none!important}.wrap{padding:0}body{background:#fff}.node{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Carta Organisasi &mdash; Koperasi Keluarga Sumiran Kuching Berhad</h1>
+  <span class="sub" id="asof">Kemas kini: Nov 2025</span>
+</header>
+
+<div class="toolbar">
+  <label>Unit:</label>
+  <select id="unitFilter"><option value="ALL">Semua Unit (Group)</option></select>
+  <label>Cari:</label>
+  <input id="search" placeholder="nama atau jawatan..." style="width:170px">
+  <button class="ghost" onclick="expandAll(true)">Buka semua</button>
+  <button class="ghost" onclick="expandAll(false)">Tutup semua</button>
+  <button class="ghost" onclick="togglePanel()">&#9998; Edit data</button>
+  <button class="ghost" onclick="exportCSV()">&#8681; CSV</button>
+  <button class="ghost" onclick="exportJSON()">&#8681; Simpan (JSON)</button>
+  <button class="ghost" onclick="document.getElementById('imp').click()">&#8679; Import</button>
+  <input type="file" id="imp" accept=".json,.csv" style="display:none" onchange="importFile(event)">
+  <button onclick="window.print()">&#128424; Cetak / PDF</button>
+  <span class="legend"><span><span class="swatch"></span>lapor utama</span><span><span class="swatch dot"></span>lapor kedua (dotted)</span></span>
+</div>
+
+<div class="stats" id="stats"></div>
+<div class="wrap"><svg id="overlay"></svg><div id="chart" class="tree"></div></div>
+
+<div class="panel" id="editor" style="display:none">
+  <h2>Edit data &mdash; ubah di sini, carta akan lukis semula sendiri</h2>
+  <p class="hint">Biar <b>Nama</b> kosong = jawatan jadi VACANT automatik. <b>Reports To</b> = ID ketua utama (garisan penuh). <b>Juga lapor</b> = ID ketua kedua untuk garisan putus (dotted); jika lebih satu, pisah dengan koma, cth: <code>MKTM, FINH</code>.</p>
+  <div style="max-height:360px;overflow:auto;margin-top:8px">
+    <table id="tbl"><thead><tr>
+      <th style="width:88px">ID</th><th>Jawatan (Position)</th><th>Nama</th>
+      <th style="width:110px">Reports To</th><th style="width:120px">Juga lapor (ID)</th>
+      <th style="width:104px">Unit</th><th style="width:110px">Outlet/Section</th><th style="width:56px"></th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+  <button class="addbtn" onclick="addRow()">+ Tambah jawatan</button>
+</div>
+
+<script>
+const UNITS=["HQ","Central Kitchen","Catering","Training","SEPR","Cafe"];
+let DATA = [{"id": "BOD", "position": "Board of Directors", "name": "", "reports_to": "", "unit": "HQ", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "MD", "position": "Managing Director", "name": "SUDARYO BIN OSMAN", "reports_to": "BOD", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "BDM", "position": "Business Development Manager", "name": "FARADZIBA BINTI IBRAHIM", "reports_to": "MD", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "FINH", "position": "Head of Finance & Account", "name": "SHURAYA BINTI SABELI", "reports_to": "MD", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "HRM", "position": "Human Resource & Administration Manager", "name": "INAS JUWANA KIING ABDULLAH", "reports_to": "MD", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "MKTM", "position": "Marketing Manager", "name": "TONY NYOH ANAK DRISA", "reports_to": "MD", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "FIN-AR", "position": "Account Executive (Receivable)", "name": "ALFINA BINTI SUAIMY", "reports_to": "FINH", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "FIN-AP", "position": "Account Executive (Payable)", "name": "SUHAMIZAH BINTI HAMZAH", "reports_to": "FINH", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "FIN-AI", "position": "Account Assistant (Intern)", "name": "MARIA MADELINA SINGGAK ANAK ARIES", "reports_to": "FINH", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "HR-E", "position": "Human Resource & Admin Executive", "name": "ZUNIKA BINTI BAKAR", "reports_to": "HRM", "unit": "HQ", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "HR-A", "position": "Human Resource Assistant", "name": "", "reports_to": "HRM", "unit": "HQ", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CK-H", "position": "Head of Central Kitchen", "name": "", "reports_to": "MD", "unit": "Central Kitchen", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CK-HC", "position": "Head Chef", "name": "", "reports_to": "CK-H", "unit": "Central Kitchen", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CK-PM", "position": "Procurement Manager", "name": "MOHAMAD AFIF BIN AZMAN", "reports_to": "CK-H", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-CHEF", "position": "Chef", "name": "RAJANAH BINTI ZAZOL", "reports_to": "CK-HC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-SC", "position": "Senior Cook", "name": "AMINAH BINTI MAHLI", "reports_to": "CK-HC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-AC", "position": "Assistant Chef", "name": "ADAM CHARLES BIN ABDULLAH", "reports_to": "CK-HC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-JC1", "position": "Junior Cook 1", "name": "AWANGKU BUDI YIDRIS BIN AWANGKO SHAHBUDIN", "reports_to": "CK-AC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-JC2", "position": "Junior Cook 2", "name": "MOHAMMAD FIKRI BIN MOHAMMAD ALI", "reports_to": "CK-AC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-JC3", "position": "Junior Cook 3", "name": "NUREFFAZIRA BINTI ROSLAN", "reports_to": "CK-AC", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-CM", "position": "Commis", "name": "MUHAMMAD MI'RAJ", "reports_to": "CK-CHEF", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-KH1", "position": "Kitchen Helper cum Butcher 1", "name": "KHAIRUL", "reports_to": "CK-CHEF", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CK-KH2", "position": "Kitchen Helper 2", "name": "KHUZAIFAH", "reports_to": "CK-CHEF", "unit": "Central Kitchen", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CAT-OM", "position": "Catering Operation Manager", "name": "SUHARYATI BINTI OSMAN", "reports_to": "MD", "unit": "Catering", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CAT-AOM", "position": "Assistant Operation Manager Catering", "name": "SITI NORSHALAWATI MOHAMADIN", "reports_to": "CAT-OM", "unit": "Catering", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CAT-MKT", "position": "Sales & Digital Marketing Executive (Catering)", "name": "NURUL HUDA BINTI BRAWI", "reports_to": "CAT-OM", "unit": "Catering", "outlet": "", "status": "FILLED", "also_reports_to": ["MKTM"]}, {"id": "CAT-ASST", "position": "Assistant Catering", "name": "", "reports_to": "CAT-AOM", "unit": "Catering", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CAT-PT1", "position": "Part Time 1", "name": "", "reports_to": "CAT-AOM", "unit": "Catering", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CAT-PT2", "position": "Part Time 2", "name": "", "reports_to": "CAT-AOM", "unit": "Catering", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "CAT-PT3", "position": "Part Time 3", "name": "", "reports_to": "CAT-AOM", "unit": "Catering", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "TRN-M", "position": "Supercharge Training Manager", "name": "", "reports_to": "MD", "unit": "Training", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "TRN-E", "position": "Training Executive", "name": "WYNNER RITCHEL BIN JOKIN", "reports_to": "TRN-M", "unit": "Training", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "TRN-SA", "position": "Sales & Admin Assistant", "name": "", "reports_to": "TRN-M", "unit": "Training", "outlet": "", "status": "VACANT", "also_reports_to": []}, {"id": "SEPR-M", "position": "Business Development & Program Manager", "name": "SCOTT ANAK LIMAN", "reports_to": "MD", "unit": "SEPR", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-CW", "position": "Camp Warden", "name": "KARSIDI", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-CAFE", "position": "Supervisor Cafe Executive", "name": "JAMILAH BINTI ABDULLAH ABBAS", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Cafe", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-CAFE-CK", "position": "Cook", "name": "SOLEKAN", "reports_to": "SEPR-CAFE", "unit": "SEPR", "outlet": "Cafe", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-CAFE-CM", "position": "Commis", "name": "ARDHI", "reports_to": "SEPR-CAFE", "unit": "SEPR", "outlet": "Cafe", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-CAFE-SA", "position": "Sales Assistant", "name": "PRINCESS SHARON", "reports_to": "SEPR-CAFE", "unit": "SEPR", "outlet": "Cafe", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-SA", "position": "Sales & Admin Executive", "name": "QARIN HAZIQ BIN SARDY", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Sales & Admin", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-OE1", "position": "Outdoor Executive 1", "name": "BERNICE RACHEL ANAK KERRY", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Outdoor", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-OC1", "position": "Outdoor Crew 1", "name": "HENDRI", "reports_to": "SEPR-OE1", "unit": "SEPR", "outlet": "Outdoor", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-OC2", "position": "Outdoor Crew 2", "name": "RAHMAN", "reports_to": "SEPR-OE1", "unit": "SEPR", "outlet": "Outdoor", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-OC3", "position": "Outdoor Crew 3", "name": "ANDRI", "reports_to": "SEPR-OE1", "unit": "SEPR", "outlet": "Outdoor", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-OE2", "position": "Outdoor Executive 2", "name": "", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Outdoor", "status": "VACANT", "also_reports_to": []}, {"id": "SEPR-AP", "position": "Animal Park Executive", "name": "RANO", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Animal Park", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-APC1", "position": "Animal Park Crew 1", "name": "LINTONG", "reports_to": "SEPR-AP", "unit": "SEPR", "outlet": "Animal Park", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-APC2", "position": "Animal Park Crew 2", "name": "", "reports_to": "SEPR-AP", "unit": "SEPR", "outlet": "Animal Park", "status": "VACANT", "also_reports_to": []}, {"id": "SEPR-ME", "position": "Maintenance Executive", "name": "BUDIYONO", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Maintenance", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-MC1", "position": "Maintenance Crew 1", "name": "", "reports_to": "SEPR-ME", "unit": "SEPR", "outlet": "Maintenance", "status": "VACANT", "also_reports_to": []}, {"id": "SEPR-MC2", "position": "Maintenance Crew 2", "name": "SIGIT", "reports_to": "SEPR-ME", "unit": "SEPR", "outlet": "Maintenance", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-MC3", "position": "Maintenance Crew 3", "name": "IKIN", "reports_to": "SEPR-ME", "unit": "SEPR", "outlet": "Maintenance", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-MC4", "position": "Maintenance Crew 4", "name": "DODIK", "reports_to": "SEPR-ME", "unit": "SEPR", "outlet": "Maintenance", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-HK", "position": "Housekeeping Executive", "name": "DARA BINTI JENI", "reports_to": "SEPR-M", "unit": "SEPR", "outlet": "Housekeeping", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-HKC1", "position": "Housekeeping Crew 1", "name": "DEDI", "reports_to": "SEPR-HK", "unit": "SEPR", "outlet": "Housekeeping", "status": "FILLED", "also_reports_to": []}, {"id": "SEPR-HKC2", "position": "Housekeeping Crew 2", "name": "ANGELINA", "reports_to": "SEPR-HK", "unit": "SEPR", "outlet": "Housekeeping", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-OM", "position": "Cafe Operation Manager", "name": "SUYATINI BINTI OSMAN", "reports_to": "MD", "unit": "Cafe", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-AOM", "position": "Assistant Operation Manager Cafe", "name": "NOORAZIMAH BINTI SALLEH", "reports_to": "CAF-OM", "unit": "Cafe", "outlet": "", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-AOM", "position": "Assistant Operation Manager Skydine", "name": "AHMAD RUSYDAN BIN PAE'E", "reports_to": "CAF-OM", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-WS-SUP", "position": "Supervisor cum Barista/Cashier", "name": "DEDI FAHMI", "reports_to": "CAF-AOM", "unit": "Cafe", "outlet": "Warong Sumiran", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-WS-CK", "position": "Cook", "name": "MINMA BINTI APO", "reports_to": "CAF-WS-SUP", "unit": "Cafe", "outlet": "Warong Sumiran", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-WS-SC", "position": "Supervisor cum Cook", "name": "NORAINI BINTI LASA", "reports_to": "CAF-AOM", "unit": "Cafe", "outlet": "Warong Sumiran", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-WS-CA", "position": "Cashier 1", "name": "NUR ELRA SYAKIRA BINTI YASIKA", "reports_to": "CAF-WS-SUP", "unit": "Cafe", "outlet": "Warong Sumiran", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-WS-SV", "position": "Server", "name": "MUHAMMAD ALIF ZAQUAN BIN ZAMZURI", "reports_to": "CAF-WS-SUP", "unit": "Cafe", "outlet": "Warong Sumiran", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-SUP", "position": "Supervisor cum Cashier", "name": "SHIRLEY EMILY ANAK SELIMAN", "reports_to": "CAF-AOM", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-CK1", "position": "Cook 1", "name": "RADEN MOHAMAD HAFIZUAN BIN RADEN SHAFARIE", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-CK2", "position": "Cook 2", "name": "HANS CHRISTOPHER FRANKLIN STEPHEN", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-BA1", "position": "Barista 1", "name": "MOHAMAD FAUZI BIN JASNI", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-BA2", "position": "Barista 2", "name": "AMIRUDDIN BIN MAT", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-CBA", "position": "Commis cum Barista 1", "name": "NORMIZAN BIN SAKALANA", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-CA2", "position": "Cashier 2", "name": "MOHAMAD BIN MOHAMAD ISHAK", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-MD-CM2", "position": "Commis 2", "name": "NOVA NABILA", "reports_to": "CAF-MD-SUP", "unit": "Cafe", "outlet": "Meditel", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-SUP", "position": "Supervisor cum Cashier", "name": "ADITTIYA ADJI ARMANDA", "reports_to": "CAF-AOM", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-CK1", "position": "Cook 1", "name": "CALVIN MANGGAU ANAK GIBSON UNTAN", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-CK2", "position": "Cook 2", "name": "EKA SUSILAWATI", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-CM1", "position": "Commis 1", "name": "NUR AINI", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-CM2", "position": "Commis 2", "name": "MUHAMMAD TUAH BIN AHMAD", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-BA", "position": "Barista", "name": "MUHAMMAD NAJMI RAMADHANI BIN ABDULLAH", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-SV", "position": "Server", "name": "NURUL FATIN BINTI ABDULLAH SIKI", "reports_to": "CAF-TJ-SUP", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-TJ-MKT", "position": "Sales & Digital Marketing Executive (Cafe)", "name": "NURSYAFIQAH BINTI NAZARUDIN", "reports_to": "CAF-AOM", "unit": "Cafe", "outlet": "Tun Jugah", "status": "FILLED", "also_reports_to": ["MKTM"]}, {"id": "CAF-SKY-SUP", "position": "Supervisor", "name": "SITI HAJAR BINTI MOHAMAD FOUZI", "reports_to": "CAF-SKY-AOM", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CK1", "position": "Cook 1", "name": "NORFIAH BINTI SA", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CK2", "position": "Cook 2", "name": "ABU BAKAR BIN MAT", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CK3", "position": "Cook 3", "name": "MUHAMMAD TARMIZIE LEE BIN ABDULLAH", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CM1", "position": "Commis 1", "name": "CYNTHIA ANAK CHUNG MIN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CM2", "position": "Commis 2", "name": "MOHD AZELY BIN ABDULLAH", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CM3", "position": "Commis 3", "name": "ALESSANDRA NICOLE ANAK BIYAI", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CA1", "position": "Cashier 1", "name": "FAUZIYYAH BAHIRAH BINTI ZAINAL ABIDIN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-CA2", "position": "Cashier 2", "name": "NUR ERVINA NATASHA BINTI RASHID", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-BA1", "position": "Barista 1", "name": "SAFRINA BINTI HAMDAN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-BA2", "position": "Barista 2", "name": "LIVIANA ANAK JOHN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-BA3", "position": "Barista 3", "name": "NURFADZLI BIN HAMDIN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-SV1", "position": "Server 1", "name": "ABG AIMAN SHAREEN BIN ABG AMRAN", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-SV2", "position": "Server 2", "name": "WILMA NITA ANAK NELSON", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-SV3", "position": "Server 3", "name": "MOHAMAD ABDUL EKRAM BIN MOHAMAD JERAIE", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-SV4", "position": "Server 4", "name": "MOHAMMAD AIMAN HIZAMI BIN KAMRI", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}, {"id": "CAF-SKY-SV5", "position": "Server 5", "name": "MOHD IDZRYEZ BIN AFFENDI", "reports_to": "CAF-SKY-SUP", "unit": "Cafe", "outlet": "Skydine", "status": "FILLED", "also_reports_to": []}];
+let collapsed = new Set();
+const SVGNS="http://www.w3.org/2000/svg";
+
+function asArr(v){ if(Array.isArray(v)) return v.filter(x=>x&&x.trim()); if(!v) return []; return String(v).split(",").map(s=>s.trim()).filter(Boolean); }
+function persist(){ try{ localStorage.setItem('kkskb_oc', JSON.stringify(DATA)); }catch(e){} }
+function restore(){ try{ const s=localStorage.getItem('kkskb_oc'); if(s) DATA=JSON.parse(s).map(normalise); }catch(e){} }
+function statusOf(p){ return (p.name||'').trim()==='' ? 'VACANT':'FILLED'; }
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function buildIndex(){
+  const byId={},kids={};
+  DATA.forEach(p=>{byId[p.id]=p;kids[p.id]=[];});
+  DATA.forEach(p=>{ if(p.reports_to && kids[p.reports_to]) kids[p.reports_to].push(p); });
+  return {byId,kids};
+}
+function currentUnit(){ return document.getElementById('unitFilter').value; }
+function searchTerm(){ return document.getElementById('search').value.trim().toLowerCase(); }
+function visibleRoots(byId){
+  const u=currentUnit();
+  if(u==='ALL') return DATA.filter(p=>!p.reports_to || !byId[p.reports_to]);
+  return DATA.filter(p=>p.unit===u).filter(p=>{const par=byId[p.reports_to];return !par||par.unit!==u;});
+}
+function descendantCount(id,kids){let n=0;(kids[id]||[]).forEach(c=>{n+=1+descendantCount(c.id,kids);});return n;}
+
+function nodeHTML(p,kids,scope,byId){
+  const vac=statusOf(p)==='VACANT';
+  const lead=['BOD','MD','BDM','FINH','HRM','MKTM'].includes(p.id);
+  let ch=(kids[p.id]||[]); if(scope&&scope!=='ALL') ch=ch.filter(c=>c.unit===scope);
+  const isCol=collapsed.has(p.id);
+  let badge='';
+  if(ch.length&&isCol) badge=`<span class="toggle">&#9660; buka (${descendantCount(p.id,kids)})</span>`;
+  else if(ch.length) badge=`<span class="toggle">&#9650; tutup</span>`;
+  let dotted='';
+  const also=asArr(p.also_reports_to).filter(id=>byId[id]);
+  if(also.length){
+    const names=also.map(id=>esc(byId[id].name||byId[id].position)).join(', ');
+    dotted=`<span class="dotted">&#8674; juga lapor: <b>${names}</b></span>`;
+  }
+  return `<div class="node ${vac?'vac':''} ${lead?'lead':''}" data-id="${p.id}" onclick="toggle('${p.id}',event)">
+    <span class="pos">${esc(p.position)}</span>
+    <span class="nm">${vac?'[ VACANT ]':esc(p.name)}</span>${badge}${dotted}</div>`;
+}
+function renderTree(node,byId,kids,scope){
+  let ch=(kids[node.id]||[]); if(scope!=='ALL') ch=ch.filter(c=>c.unit===scope);
+  const isCol=collapsed.has(node.id);
+  let li=`<li class="${isCol?'collapsed':''}">${nodeHTML(node,kids,scope,byId)}`;
+  if(ch.length&&!isCol) li+='<ul>'+ch.map(c=>renderTree(c,byId,kids,scope)).join('')+'</ul>';
+  li+='</li>'; return li;
+}
+function render(){
+  const {byId,kids}=buildIndex();
+  const scope=currentUnit();
+  const roots=visibleRoots(byId);
+  const chart=document.getElementById('chart');
+  if(!roots.length) chart.innerHTML='<p style="text-align:center;color:#6b7c85">Tiada data untuk unit ini.</p>';
+  else chart.innerHTML='<ul>'+roots.map(r=>renderTree(r,byId,kids,scope)).join('')+'</ul>';
+  applySearch(); renderStats(); requestAnimationFrame(drawDotted);
+}
+function renderStats(){
+  const scope=currentUnit();
+  const pool=scope==='ALL'?DATA:DATA.filter(p=>p.unit===scope);
+  const fill=pool.filter(p=>statusOf(p)==='FILLED').length;
+  document.getElementById('stats').innerHTML=`Papar: <b>${scope==='ALL'?'Semua Unit':scope}</b> &nbsp;|&nbsp; Jumlah: <b>${pool.length}</b> &nbsp;|&nbsp; Diisi: <b>${fill}</b> &nbsp;|&nbsp; Kosong: <b>${pool.length-fill}</b>`;
+}
+
+/* dotted matrix connectors between currently-visible nodes */
+function drawDotted(){
+  const svg=document.getElementById('overlay'), wrap=document.querySelector('.wrap');
+  svg.innerHTML='';
+  svg.setAttribute('width',wrap.scrollWidth); svg.setAttribute('height',wrap.scrollHeight);
+  const cRect=wrap.getBoundingClientRect();
+  const pos=el=>{const r=el.getBoundingClientRect();return {x:r.left-cRect.left+wrap.scrollLeft,y:r.top-cRect.top+wrap.scrollTop,w:r.width,h:r.height,ok:r.width>0};};
+  DATA.forEach(p=>{
+    asArr(p.also_reports_to).forEach(bossId=>{
+      const a=document.querySelector(`.node[data-id="${p.id}"]`);
+      const b=document.querySelector(`.node[data-id="${bossId}"]`);
+      if(!a||!b) return;
+      const pa=pos(a),pb=pos(b); if(!pa.ok||!pb.ok) return;
+      const x1=pb.x+pb.w/2, y1=pb.y+pb.h, x2=pa.x+pa.w/2, y2=pa.y;
+      const mx=(x1+x2)/2;
+      const path=document.createElementNS(SVGNS,'path');
+      path.setAttribute('d',`M ${x1} ${y1} C ${x1} ${(y1+y2)/2}, ${x2} ${(y1+y2)/2}, ${x2} ${y2}`);
+      path.setAttribute('fill','none'); path.setAttribute('stroke','#c67b2c');
+      path.setAttribute('stroke-width','2'); path.setAttribute('stroke-dasharray','5 4');
+      svg.appendChild(path);
+      const dot=document.createElementNS(SVGNS,'circle');
+      dot.setAttribute('cx',x2);dot.setAttribute('cy',y2);dot.setAttribute('r','3');dot.setAttribute('fill','#c67b2c');
+      svg.appendChild(dot);
+    });
+  });
+}
+let raf; function scheduleDot(){cancelAnimationFrame(raf);raf=requestAnimationFrame(drawDotted);}
+
+function toggle(id,ev){ev.stopPropagation(); if(collapsed.has(id))collapsed.delete(id); else collapsed.add(id); render();}
+function expandAll(open){collapsed=open?new Set():new Set(DATA.map(p=>p.id)); render();}
+function applySearch(){
+  const t=searchTerm();
+  document.querySelectorAll('.node').forEach(n=>{
+    n.style.outline=''; n.style.opacity='';
+    if(t){const txt=n.textContent.toLowerCase(); if(txt.includes(t))n.style.outline='2px solid var(--accent)'; else n.style.opacity='.3';}
+  });
+}
+
+/* editor */
+function renderTable(){
+  const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+  DATA.forEach((p,i)=>{
+    const tr=document.createElement('tr'); if(statusOf(p)==='VACANT')tr.className='vacrow';
+    tr.innerHTML=`
+      <td><input value="${esc(p.id)}" onchange="upd(${i},'id',this.value)"></td>
+      <td><input value="${esc(p.position)}" onchange="upd(${i},'position',this.value)"></td>
+      <td><input value="${esc(p.name)}" placeholder="(kosong = vacant)" onchange="upd(${i},'name',this.value)"></td>
+      <td><input value="${esc(p.reports_to)}" list="idlist" onchange="upd(${i},'reports_to',this.value)"></td>
+      <td class="also"><input value="${esc(asArr(p.also_reports_to).join(', '))}" placeholder="cth: MKTM" onchange="upd(${i},'also_reports_to',this.value)"></td>
+      <td><select onchange="upd(${i},'unit',this.value)">${UNITS.map(u=>`<option ${u===p.unit?'selected':''}>${u}</option>`).join('')}</select></td>
+      <td><input value="${esc(p.outlet)}" onchange="upd(${i},'outlet',this.value)"></td>
+      <td><button class="del" onclick="delRow(${i})">Buang</button></td>`;
+    tb.appendChild(tr);
+  });
+  let dl=document.getElementById('idlist');
+  if(!dl){dl=document.createElement('datalist');dl.id='idlist';document.body.appendChild(dl);}
+  dl.innerHTML=DATA.map(p=>`<option value="${esc(p.id)}">`).join('');
+}
+function upd(i,k,v){ DATA[i][k]=(k==='also_reports_to')?asArr(v):v; DATA[i].status=statusOf(DATA[i]); persist(); render(); if(k==='id')renderTable(); }
+function delRow(i){ if(confirm('Buang jawatan ini?')){DATA.splice(i,1);persist();renderTable();render();} }
+function addRow(){DATA.push({id:'NEW'+(DATA.length+1),position:'Jawatan Baharu',name:'',reports_to:'MD',also_reports_to:[],unit:'HQ',outlet:'',status:'VACANT'});persist();renderTable();render();document.querySelector('#tbl tbody tr:last-child input').focus();}
+function togglePanel(){const e=document.getElementById('editor');const show=e.style.display==='none';e.style.display=show?'block':'none';if(show){renderTable();e.scrollIntoView({behavior:'smooth'});}}
+
+/* import / export */
+function exportJSON(){dl('KKSKB_org_data.json',JSON.stringify(DATA,null,1));}
+function exportCSV(){
+  const head=['ID','Position','Name','Reports To (ID)','Also Reports To (IDs)','Unit','Outlet/Section','Status'];
+  const rows=DATA.map(p=>[p.id,p.position,p.name,p.reports_to,asArr(p.also_reports_to).join(' '),p.unit,p.outlet,statusOf(p)]
+    .map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','));
+  dl('KKSKB_org_data.csv','\ufeff'+head.join(',')+'\n'+rows.join('\n'));
+}
+function dl(fn,txt){const b=new Blob([txt],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;a.click();}
+function importFile(e){
+  const f=e.target.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{try{let d; if(f.name.endsWith('.json'))d=JSON.parse(r.result); else d=parseCSV(r.result);
+    if(Array.isArray(d)&&d.length){DATA=d.map(normalise);collapsed=new Set();persist();renderTable();render();alert('Import berjaya: '+DATA.length+' jawatan.');}}
+    catch(err){alert('Import gagal: '+err.message);}}; r.readAsText(f); e.target.value='';
+}
+function normalise(p){return{id:p.id||p.ID||'',position:p.position||p.Position||'',name:p.name||p.Name||'',
+  reports_to:p.reports_to||p['Reports To (ID)']||p.ReportsTo||'',
+  also_reports_to:asArr(p.also_reports_to||p['Also Reports To (IDs)']||p['Also Reports To']||p.AlsoReportsTo||[]),
+  unit:p.unit||p.Unit||'HQ',outlet:p.outlet||p['Outlet/Section']||p['Outlet / Section']||'',status:''};}
+function parseCSV(txt){const lines=txt.replace(/\ufeff/,'').split(/\r?\n/).filter(x=>x.trim());const head=splitCSV(lines[0]);
+  return lines.slice(1).map(l=>{const c=splitCSV(l);const o={};head.forEach((h,i)=>o[h.trim()]=c[i]||'');
+    if(o['Also Reports To (IDs)'])o.also_reports_to=o['Also Reports To (IDs)'].split(/[ ,]+/).filter(Boolean); return normalise(o);});}
+function splitCSV(l){const out=[];let cur='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(q){if(ch=='"'){if(l[i+1]=='"'){cur+='"';i++;}else q=false;}else cur+=ch;}else{if(ch=='"')q=true;else if(ch==','){out.push(cur);cur='';}else cur+=ch;}}out.push(cur);return out;}
+
+/* init */
+function defaultCollapse(){const managerIds=new Set(DATA.filter(p=>p.reports_to==='MD'||p.id==='MD').map(p=>p.id));collapsed=new Set(managerIds);collapsed.delete('MD');}
+function initUnitFilter(){const s=document.getElementById('unitFilter');UNITS.forEach(u=>{const o=document.createElement('option');o.value=u;o.textContent=u;s.appendChild(o);});
+  s.onchange=()=>{if(currentUnit()==='ALL')defaultCollapse();else collapsed=new Set();render();};}
+document.getElementById('search').addEventListener('input',applySearch);
+document.querySelector('.wrap').addEventListener('scroll',scheduleDot);
+window.addEventListener('resize',scheduleDot);
+DATA=DATA.map(normalise); restore(); initUnitFilter(); defaultCollapse(); render();
+</script>
+</body>
+</html>
